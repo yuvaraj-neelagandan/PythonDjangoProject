@@ -1,0 +1,8 @@
+
+Django>=3.2
+gunicorn
+dj-database-url
+python-decouple
+whitenoise
+djangorestframework
+psycopg2-binary
