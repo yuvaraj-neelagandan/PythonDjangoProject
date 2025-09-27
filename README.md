@@ -49,7 +49,7 @@ GET /api/employees/
 GET /api/employees/?search=<name>
 ```
 
-### ➕ Create employee
+### Create employee
 ```http
 POST /api/employees/
 Content-Type: application/json
