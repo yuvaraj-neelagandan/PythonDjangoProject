@@ -1,31 +1,126 @@
-
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>Employee Manager</title>
+  <title>Employee Manager</title>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 </head>
-<body>
-    <h1>Employee Salary Filter</h1>
-    <input type="number" id="salaryInput" placeholder="Min salary" />
-    <button onclick="fetchSalaries()">Fetch</button>
-    <ul id="results"></ul>
+<body class="container">
 
-    <script>
-        async function fetchSalaries() {
-            const minSalary = document.getElementById('salaryInput').value;
-            let url = 'https://<your-heroku-app>.herokuapp.com/api/salaries/';
-            if (minSalary) url += `?min_salary=${minSalary}`;
-            const res = await fetch(url);
-            const data = await res.json();
-            const list = document.getElementById('results');
-            list.innerHTML = '';
-            data.forEach(e => {
-                const li = document.createElement('li');
-                li.textContent = `${e.name} - ₹${e.salary}`;
-                list.appendChild(li);
-            });
-        }
-    </script>
+  <h4>Employee Manager</h4>
+
+  <ul class="tabs">
+    <li class="tab col s3"><a class="active" href="#all">All Employees</a></li>
+    <li class="tab col s3"><a href="#create">Create New</a></li>
+  </ul>
+
+  <div id="all" class="col s12">
+    <div class="input-field">
+      <input type="text" id="search" placeholder="Search by name"/>
+      <button class="btn" onclick="fetchEmployees()">Search</button>
+    </div>
+    <table class="striped">
+      <thead>
+        <tr><th>ID</th><th>Name</th><th>Email</th><th>Salary</th><th>Actions</th></tr>
+      </thead>
+      <tbody id="employeeList"></tbody>
+    </table>
+  </div>
+
+  <div id="create" class="col s12">
+    <div class="input-field">
+      <input type="text" id="name" placeholder="Name">
+    </div>
+    <div class="input-field">
+      <input type="email" id="email" placeholder="Email">
+    </div>
+    <div class="input-field">
+      <input type="number" id="salary" placeholder="Salary">
+    </div>
+    <button class="btn" onclick="createEmployee()">Add</button>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      M.Tabs.init(document.querySelectorAll('.tabs'));
+    });
+
+    const API = '/api/employees/';
+
+    function fetchEmployees() {
+      const q = document.getElementById('search').value;
+      let url = API;
+      if (q) url += `?search=${q}`;
+
+      fetch(url).then(res => res.json()).then(data => {
+        const rows = data.map(e => `
+          <tr>
+            <td>${e.id}</td>
+            <td>${e.name}</td>
+            <td>${e.email}</td>
+            <td>${e.salary}</td>
+            <td>
+              <button class="btn-small orange" onclick="edit(${e.id}, '${e.name}', '${e.email}', '${e.salary}')">Edit</button>
+              <button class="btn-small red" onclick="remove(${e.id})">Delete</button>
+            </td>
+          </tr>`).join('');
+        document.getElementById('employeeList').innerHTML = rows;
+      });
+    }
+
+    function createEmployee() {
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+      const salary = document.getElementById('salary').value;
+
+      if (!name || !email || !salary) {
+        alert("All fields are required.");
+        return;
+      }
+
+      fetch(API, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, email, salary })
+      })
+      .then(res => {
+        if (!res.ok) return res.json().then(err => { throw err });
+        return res.json();
+      })
+      .then(data => {
+        alert("Employee created.");
+        fetchEmployees();
+      })
+      .catch(err => {
+        console.error("POST failed", err);
+        alert("Error: " + JSON.stringify(err));
+      });
+    }
+
+    function edit(id, name, email, salary) {
+      const newName = prompt("Update name", name);
+      const newEmail = prompt("Update email", email);
+      const newSalary = prompt("Update salary", salary);
+
+      if (!newName || !newEmail || !newSalary) {
+        alert("All fields are required.");
+        return;
+      }
+
+      fetch(`${API}${id}/`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name: newName, email: newEmail, salary: newSalary })
+      }).then(fetchEmployees);
+    }
+
+    function remove(id) {
+      fetch(`${API}${id}/`, { method: 'DELETE' }).then(fetchEmployees);
+    }
+
+    fetchEmployees();
+  </script>
 </body>
 </html>

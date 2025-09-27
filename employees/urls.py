@@ -1,12 +1,7 @@
-
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import EmployeeViewSet, salary_filter
-
-router = DefaultRouter()
-router.register(r'employees', EmployeeViewSet)
+from django.urls import path
+from . import views
 
 urlpatterns = [
-    path('', include(router.urls)),
-    path('salaries/', salary_filter),
+    path('employees/', views.employee_list, name='employee_list'),
+    path('employees/<int:pk>/', views.employee_detail, name='employee_detail'),
 ]
