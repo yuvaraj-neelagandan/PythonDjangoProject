@@ -1,6 +1,22 @@
 
 # Employee Manager (Django + Heroku + HTML)
 
+### Screenshots
+
+1. **UI Overview**
+   ![UI Overview](sc/demo-ui.png)
+
+2. **Search**
+   ![Created View](sc/demo-ui1.png)
+
+3. **Create Employee Form**
+   ![Create Form](sc/demo-ui2.png)
+
+4. **Postman API Test**
+   ![Postman Test](sc/demo-ui3.png)
+
+---
+
 ## Frontend Features
 
 - View all employees in a table
