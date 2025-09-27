@@ -7,14 +7,16 @@
    ![UI Overview](sc/demo-ui.png)
 
 2. **Search**
-   ![Created View](sc/demo-ui1.png)
+   ![Search](sc/demo-ui1.png)
 
 3. **Create Employee Form**
-   ![Create Form](sc/demo-ui2.png)
+   ![Create](sc/demo-ui2.png)
 
 4. **Postman API Test**
    ![Postman Test](sc/demo-ui3.png)
 
+5. **DB Test**
+   ![DB Test](sc/demo-ui4.png)
 ---
 
 ## Frontend Features
